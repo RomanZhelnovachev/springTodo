@@ -1,0 +1,10 @@
+CREATE TABLE tasks (
+id UUID PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+author VARCHAR(50) NOT NULL,
+description VARCHAR(255) NOT NULL,
+worker VARCHAR(50),
+status VARCHAR(20) NOT NULL CHECK(status IN('TODO', 'IN_WORK', 'DONE')),
+time_created TIMESTAMP NOT NULL,
+time_updated TIMESTAMP
+);
