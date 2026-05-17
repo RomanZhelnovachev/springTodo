@@ -7,6 +7,8 @@ import com.emobile.springtodo.exception.TaskNotCompletedException;
 import com.emobile.springtodo.exception.TaskNotFoundByIdException;
 import com.emobile.springtodo.mapper.TaskMapper;
 import com.emobile.springtodo.repository.TaskRepository;
+import com.emobile.springtodo.repository.TaskRepositoryHibernate;
+import com.emobile.springtodo.repository.TaskRepositoryJPA;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,9 @@ import java.util.UUID;
 @Slf4j
 public class TaskService {
 
-    private final TaskRepository repository;
+//    private final TaskRepository repository;
+//    private final TaskRepositoryHibernate repository;
+    private final TaskRepositoryJPA repository;
     private final TaskMapper mapper;
     private final MeterRegistry registry;
 
@@ -64,7 +68,7 @@ public class TaskService {
         task.setWorker(request.worker());
         task.setStatus(TaskStatus.IN_WORK);
         task.setTimeUpdated(LocalDateTime.now());
-        repository.updateTask(task);
+//        repository.updateTask(task);
         log.info("Задача с ID {} отправлена в работу", task.getId());
         return mapper.mapToDto(task);
     }
@@ -76,7 +80,8 @@ public class TaskService {
         if(task.getStatus() == TaskStatus.DONE){
             log.info("Задача с ID {} выполнена и удалена", id);
             registry.counter("task.completed").increment();
-            repository.deleteTask(id);
+//            repository.deleteTask(id);
+            repository.deleteById(id);
         } else {
             log.error("Задача с ID {} ещё не выполнена", id);
             throw new TaskNotCompletedException(id);
